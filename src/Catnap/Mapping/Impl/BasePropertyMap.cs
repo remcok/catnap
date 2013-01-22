@@ -6,7 +6,8 @@ using Catnap.Logging;
 
 namespace Catnap.Mapping.Impl
 {
-    public abstract class BasePropertyMap<TEntity, TProperty, TConcrete> : IPropertyMap<TEntity>, IPropertyMappable<TEntity, TProperty, TConcrete>
+	[MonoTouch.Foundation.Preserve(AllMembers=true)]
+	public abstract class BasePropertyMap<TEntity, TProperty, TConcrete> : IPropertyMap<TEntity>, IPropertyMappable<TEntity, TProperty, TConcrete>
         where TEntity : class, new()
         where TConcrete : BasePropertyMap<TEntity, TProperty, TConcrete>
     {
@@ -17,13 +18,17 @@ namespace Catnap.Mapping.Impl
         protected BasePropertyMap(string propertyName)
         {
             PropertyName = propertyName;
-        }
+			// -- Added by RD for Monotouch AOT compiler limitations
+			accessStrategy = new PropertyAccessStrategy<TEntity, TProperty>(propertyName);
+		}
 
         protected BasePropertyMap(Expression<Func<TEntity, TProperty>> property)
         {
             this.property = property;
             PropertyName = property.GetMemberExpression().Member.Name;
-        }
+			// -- Added by RD for Monotouch AOT compiler limitations
+			accessStrategy = new PropertyAccessStrategy<TEntity, TProperty>(property);
+		}
 
         public string PropertyName { get; private set; }
 
@@ -69,11 +74,12 @@ namespace Catnap.Mapping.Impl
 
         public virtual void Done(IDomainMap domainMap)
         {
-            access = access ?? DefaultAccess;
-            accessStrategy = property == null
-                ? access.CreateFor<TEntity, TProperty>(PropertyName)
-                : access.CreateFor(property);
-        }
+			// -- Removed by RD due to Monotouch AOT compiler limitations, moved to constructor where type information is known.
+			//access = access ?? DefaultAccess;
+			//accessStrategy = property == null
+			//    ? access.CreateFor<TEntity, TProperty>(PropertyName)
+			//    : access.CreateFor(property);
+		}
 
         protected virtual IAccessStrategyFactory DefaultAccess
         {
