@@ -15,3 +15,5 @@ Ankh.NoLoad
 src/CommonAssemblyInfo.cs
 *.nupkg
 connections.config
+*.DS_Store
+*.userprefs
