@@ -6,7 +6,6 @@ using Catnap.Logging;
 
 namespace Catnap.Mapping.Impl
 {
-	[MonoTouch.Foundation.Preserve(AllMembers=true)]
 	public abstract class BasePropertyMap<TEntity, TProperty, TConcrete> : IPropertyMap<TEntity>, IPropertyMappable<TEntity, TProperty, TConcrete>
         where TEntity : class, new()
         where TConcrete : BasePropertyMap<TEntity, TProperty, TConcrete>
